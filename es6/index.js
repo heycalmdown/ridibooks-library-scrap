@@ -2,8 +2,6 @@ import fetchLibrary from './library';
 import fetchInfo from './info';
 import makeCsv from './csv';
 
-makeCsv();
-/*
 fetchLibrary().then(books => {
   console.log(books.length);
 }).then(() => {
@@ -11,4 +9,3 @@ fetchLibrary().then(books => {
 }).then(() => {
   return makeCsv();
 });
-*/
