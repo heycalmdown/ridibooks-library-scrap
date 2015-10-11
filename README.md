@@ -7,7 +7,14 @@
 
 ## Usage
 
-```babel-node es6/index.js```
+```sh
+$ cat config.local.json
+{
+  "id": "myid",
+  "password": "mypassword"
+}
+$ babel-node es6/index.js
+```
 
 ## License
 
