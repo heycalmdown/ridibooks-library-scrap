@@ -4,9 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile": "babel -d lib/ es6/",
+    "prepublish": "npm run compile"
   },
-  "author": "",
+  "author": "Kei Son(hey.calmdown@gmail.com)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heycalmdown/ridibooks-library-scrape.git"
+  },
   "license": "ISC",
   "dependencies": {
     "bluebird": "^2.10.2",
@@ -14,5 +20,8 @@
     "superagent": "^1.4.0",
     "superagent-promise": "^1.0.3",
     "x-ray": "^2.0.2"
+  },
+  "devDependencies": {
+    "babel": "^5.8.23"
   }
 }
