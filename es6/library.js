@@ -1,14 +1,23 @@
 import superagent from 'superagent';
 import Xray from 'x-ray';
 import Promise from 'bluebird';
+import mkdirp from 'mkdirp';
 
 import * as _ from 'lodash';
 import * as fs from 'fs';
+import * as path from 'path';
 
 import config from './config';
 import driver from './driver';
 
-let writeFile = Promise.promisify(fs.writeFile);
+const getDirName = path.dirname;
+const mkdirP = Promise.promisify(mkdirp);
+const writeFile = Promise.promisify(fs.writeFile);
+function writeFileP(path, contents) {
+  return mkdirP(getDirName(path)).then(() => {
+    return writeFile(path, contents);
+  });
+}
 
 let agent = superagent.agent();
 let uri = `https://ridibooks.com/account/action/login?user_id=${config.id}&password=${config.password}`;
@@ -30,6 +39,6 @@ export default function () {
       book.title = _.trim(book.title);
       return book;
     });
-    return writeFile('./tmp/books.json', JSON.stringify(books)).then(() => books);
+    return writeFileP('./tmp/books.json', JSON.stringify(books)).then(() => books);
   });
 }
