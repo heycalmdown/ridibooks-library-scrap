@@ -6,6 +6,7 @@ import mkdirp from 'mkdirp';
 import * as _ from 'lodash';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as url from 'url';
 
 import config from './config';
 import driver from './driver';
@@ -19,14 +20,16 @@ function writeFileP(path, contents) {
   });
 }
 
-let agent = superagent.agent();
-let uri = `https://ridibooks.com/account/action/login?user_id=${config.id}&password=${config.password}`;
+const agent = superagent.agent();
+
+const query = {query: {user_id: config.id, password: config.password}};
+const uri = `https://ridibooks.com/account/action/login${url.format(query)}`;
 
 export default function () {
-  let req = agent.get(uri);
-  return Promise.promisify(req.end, req)().then(() => {
-    let x = Xray().driver(driver(agent)).delay(100);
-    let query = x('http://ridibooks.com/library', '#book_', [{
+  const req = agent.get(uri);
+  return Promise.promisify(req.end, req)().then((res) => {
+    const x = Xray().driver(driver(agent)).delay(100);
+    const query = x('http://ridibooks.com/library', '#book_', [{
       title: 'span.title_text',
       author: '.book_metadata.author > a',
       series: '.series_book > .book_count',
@@ -37,6 +40,7 @@ export default function () {
   }).then(books => {
     books = books.map(book => {
       book.title = _.trim(book.title);
+      book.series = book.series || 1;
       return book;
     });
     return writeFileP('./tmp/books.json', JSON.stringify(books)).then(() => books);

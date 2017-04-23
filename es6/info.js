@@ -4,7 +4,7 @@ import Promise from 'bluebird';
 import * as _fs from 'fs';
 import * as _ from 'lodash';
 
-let fs = Promise.promisifyAll(_fs);
+const fs = Promise.promisifyAll(_fs);
 let cachedInfo = {};
 
 try {
@@ -13,12 +13,12 @@ try {
 
 export default function () {
   let books = JSON.parse(fs.readFileSync('./tmp/books.json'));
-  let x = Xray().concurrency(10).throttle(10, '1s');
+  const x = Xray().concurrency(10).throttle(10, '1s');
 
   books = books.filter(book => !cachedInfo[book.id]);
   return Promise.map(books, (book) => {
-    let id = book.id.replace('book', '');
-    let q = x('http://ridibooks.com/v2/Detail?id=' + id, {
+    const id = book.id.replace('book', '');
+    const q = x('http://ridibooks.com/v2/Detail?id=' + id, {
       category: '.info_category_wrap > a',
       rating: '.info_metadata01_wrap meta[itemprop="ratingValue"]@content'
     });
